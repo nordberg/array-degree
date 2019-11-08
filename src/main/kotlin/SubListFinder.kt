@@ -1,9 +1,11 @@
+package com.stravito.aws.sqs
+
 /**
  * Keeps track of where the list started ([firstIndex]) and where the current end ([lastIndex]] is. Also what [degree]
  * the number [trackedValue] has.
  *
  */
-data class Tracker(val firstIndex: Int, val lastIndex: Int, val degree: Int, val trackedValue: Int)
+data class Tracker(val firstIndex: Int, val lastIndex: Int, val degree: Int)
 
 class SubListFinder {
     companion object {
@@ -17,19 +19,19 @@ class SubListFinder {
 
             if (input.isEmpty()) return emptyList()
 
-            var trackerByInt: MutableMap<Int, Tracker> = mutableMapOf()
+            val trackerByInt: MutableMap<Int, Tracker> = mutableMapOf()
 
-            var best = Tracker(0, 0, 1, trackedValue = input[0])
+            var best = Tracker(0, 0, 1)
 
             for ((index, value) in input.withIndex()) {
                 val tracker = trackerByInt[value]
 
                 // Either update lastIndex and degree if value is being tracked, or create new Tracker for this value
                 val currentTracker =
-                    tracker?.copy(lastIndex = index, degree = tracker.degree + 1) ?: Tracker(index, index, 1, value)
+                    tracker?.copy(lastIndex = index, degree = tracker.degree + 1) ?: Tracker(index, index, 1)
 
                 // It's a new best if the degree is the same but the new sub-list is shorter. It's also better if the
-                // degree is highger
+                // degree is higher
                 if (currentTracker.length() < best.length() && currentTracker.degree == best.degree
                     || currentTracker.degree > best.degree) {
                     best = currentTracker.copy()
